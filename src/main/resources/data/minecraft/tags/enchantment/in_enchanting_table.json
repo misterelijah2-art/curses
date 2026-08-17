@@ -1,0 +1,11 @@
+{
+	"replace": false,
+	"values": [
+		"curses:butterfingers",
+		"curses:reverse_knockback",
+		"curses:pacifists_rage",
+		"curses:loud_steps",
+		"curses:gravity_tax",
+		"curses:unstable_mending"
+	]
+}
