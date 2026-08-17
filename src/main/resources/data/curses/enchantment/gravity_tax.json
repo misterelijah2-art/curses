@@ -1,0 +1,21 @@
+{
+	"anvil_cost": 3,
+	"description": {
+		"translate": "enchantment.curses.gravity_tax"
+	},
+	"effects": {},
+	"max_cost": {
+		"base": 20,
+		"per_level_above_first": 6
+	},
+	"max_level": 1,
+	"min_cost": {
+		"base": 6,
+		"per_level_above_first": 6
+	},
+	"slots": [
+		"feet"
+	],
+	"supported_items": "#minecraft:enchantable/foot_armor",
+	"weight": 7
+}

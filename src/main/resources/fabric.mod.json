@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "curses",
+	"version": "${version}",
+	"name": "Curses",
+	"description": "A Fabric 1.21.11 mod that adds cursed joke enchantments with chaotic side effects.",
+	"authors": [
+		"misterelijah2-art"
+	],
+	"contact": {
+		"sources": "https://github.com/misterelijah2-art/curses"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/curses/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"curses.Curses"
+		],
+		"client": [
+			"curses.client.CursesClient"
+		]
+	},
+	"mixins": [
+		"curses.mixins.json",
+		{
+			"config": "curses.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
