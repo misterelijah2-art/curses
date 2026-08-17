@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -48,6 +49,7 @@ public final class CursedEffects {
 
 	public static void register() {
 		AttackEntityCallback.EVENT.register(CursedEffects::onAttackEntity);
+		ServerTickEvents.START_SERVER_TICK.register(server -> cleanupExpiredKnockbackCancellations(server.getTickCount()));
 	}
 
 	public static void onStep(Entity entity, BlockState state) {
@@ -73,6 +75,7 @@ public final class CursedEffects {
 	}
 
 	public static boolean consumeKnockbackCancellation(LivingEntity entity) {
+		cleanupExpiredKnockbackCancellations(entity.level().getGameTime());
 		Long expiresAt = CANCELLED_KNOCKBACK.get(entity.getUUID());
 
 		if (expiresAt == null) {
@@ -130,6 +133,8 @@ public final class CursedEffects {
 			return InteractionResult.PASS;
 		}
 
+		cleanupExpiredKnockbackCancellations(level.getGameTime());
+
 		ItemStack weapon = player.getItemInHand(hand);
 
 		if (weapon.isEmpty()) {
@@ -143,6 +148,11 @@ public final class CursedEffects {
 			ItemStack droppedWeapon = weapon.copy();
 			player.setItemInHand(hand, ItemStack.EMPTY);
 			player.drop(droppedWeapon, true);
+			weapon = player.getItemInHand(hand);
+		}
+
+		if (weapon.isEmpty()) {
+			return InteractionResult.PASS;
 		}
 
 		if (getEnchantmentLevel(registryAccess, weapon, CursedEnchantments.REVERSE_KNOCKBACK) > 0 && player.getRandom().nextFloat() < REVERSE_KNOCKBACK_CHANCE) {
@@ -183,5 +193,9 @@ public final class CursedEffects {
 			.value();
 
 		level.playSound(null, position.x, position.y, position.z, soundEvent, SoundSource.PLAYERS, volume, pitch);
+	}
+
+	private static void cleanupExpiredKnockbackCancellations(long gameTime) {
+		CANCELLED_KNOCKBACK.entrySet().removeIf(entry -> entry.getValue() < gameTime);
 	}
 }
